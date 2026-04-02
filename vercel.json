@@ -1,3 +1,23 @@
 {
-  "outputDirectory": "dist"
+  "framework": null,
+  "buildCommand": null,
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/_expo/(.*)",
+      "destination": "/dist/_expo/$1"
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": "/dist/assets/$1"
+    },
+    {
+      "source": "/favicon.ico",
+      "destination": "/dist/favicon.ico"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/dist/index.html"
+    }
+  ]
 }
