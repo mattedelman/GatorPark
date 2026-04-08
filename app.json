@@ -23,6 +23,7 @@
       "edgeToEdgeEnabled": true
     },
     "web": {
+      "name": "GatorPark",
       "favicon": "./assets/favicon.png",
       "themeColor": "#1E3A5F",
       "backgroundColor": "#E8ECF2"

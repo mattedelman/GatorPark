@@ -1,5 +1,11 @@
 import React from 'react';
-import { Platform, ActivityIndicator, View } from 'react-native';
+import {
+  Platform,
+  ActivityIndicator,
+  View,
+  useWindowDimensions,
+  StyleSheet,
+} from 'react-native';
 import { useFonts } from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -48,6 +54,65 @@ const TAB_ICONS = {
   About: { active: 'information-circle', inactive: 'information-circle-outline' },
 };
 
+const WEB_FRAME_BG = '#E8ECF2';
+
+function WebShell({ children }) {
+  const { width } = useWindowDimensions();
+  if (Platform.OS !== 'web') {
+    return children;
+  }
+  const wide = width >= 500;
+  return (
+    <View
+      style={[
+        styles.webOuter,
+        wide ? styles.webOuterWide : styles.webOuterNarrow,
+      ]}
+    >
+      <View
+        style={[
+          styles.webInner,
+          wide ? styles.webInnerWide : styles.webInnerNarrow,
+        ]}
+      >
+        {children}
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  webOuter: {
+    flex: 1,
+    width: '100%',
+    minHeight: '100vh',
+    backgroundColor: WEB_FRAME_BG,
+    alignItems: 'center',
+  },
+  webOuterWide: {
+    paddingVertical: 20,
+    justifyContent: 'center',
+  },
+  webOuterNarrow: {
+    justifyContent: 'flex-start',
+  },
+  webInner: {
+    width: '100%',
+    maxWidth: 430,
+    flex: 1,
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+  },
+  webInnerWide: {
+    maxHeight: 'calc(100vh - 40px)',
+    borderRadius: 24,
+    boxShadow: '0 0 40px rgba(0, 0, 0, 0.12)',
+  },
+  webInnerNarrow: {
+    maxHeight: '100vh',
+  },
+});
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     ...Ionicons.font,
@@ -55,21 +120,24 @@ export default function App() {
 
   if (!fontsLoaded) {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: COLORS.surface,
-        }}
-      >
-        <ActivityIndicator size="large" color={COLORS.primary} />
-      </View>
+      <WebShell>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: COLORS.surface,
+          }}
+        >
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
+      </WebShell>
     );
   }
 
   return (
-    <SafeAreaProvider>
+    <WebShell>
+      <SafeAreaProvider>
       <NavigationContainer>
         <Tab.Navigator
           screenOptions={({ route }) => ({
@@ -124,5 +192,6 @@ export default function App() {
         </Tab.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
+    </WebShell>
   );
 }
