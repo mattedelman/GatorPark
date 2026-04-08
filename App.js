@@ -138,7 +138,15 @@ export default function App() {
   return (
     <WebShell>
       <SafeAreaProvider>
-      <NavigationContainer>
+      <NavigationContainer
+        {...(Platform.OS === 'web'
+          ? {
+              documentTitle: {
+                formatter: () => 'GatorPark',
+              },
+            }
+          : {})}
+      >
         <Tab.Navigator
           screenOptions={({ route }) => ({
             headerShown: false,
