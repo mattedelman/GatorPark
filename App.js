@@ -1,20 +1,128 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { Platform, ActivityIndicator, View } from 'react-native';
+import { useFonts } from 'expo-font';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-export default function App() {
+import HomeScreen from './src/screens/HomeScreen';
+import GarageDetailScreen from './src/screens/GarageDetailScreen';
+import FilterScreen from './src/screens/FilterScreen';
+import AboutScreen from './src/screens/AboutScreen';
+import { COLORS } from './src/constants/theme';
+
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function HomeStack() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="HomeMap" component={HomeScreen} />
+      <Stack.Screen
+        name="GarageDetail"
+        component={GarageDetailScreen}
+        options={{ presentation: 'card', gestureEnabled: true }}
+      />
+    </Stack.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+function FilterStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="FilterMain" component={FilterScreen} />
+      <Stack.Screen
+        name="GarageDetail"
+        component={GarageDetailScreen}
+        options={{ presentation: 'card', gestureEnabled: true }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+const TAB_ICONS = {
+  Home: { active: 'map', inactive: 'map-outline' },
+  Filter: { active: 'filter', inactive: 'filter-outline' },
+  About: { active: 'information-circle', inactive: 'information-circle-outline' },
+};
+
+export default function App() {
+  const [fontsLoaded] = useFonts({
+    ...Ionicons.font,
+  });
+
+  if (!fontsLoaded) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: COLORS.surface,
+        }}
+      >
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      </View>
+    );
+  }
+
+  return (
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            headerShown: false,
+            tabBarIcon: ({ focused, color, size }) => {
+              const icons = TAB_ICONS[route.name];
+              return (
+                <Ionicons
+                  name={focused ? icons.active : icons.inactive}
+                  size={22}
+                  color={color}
+                />
+              );
+            },
+            tabBarActiveTintColor: COLORS.primary,
+            tabBarInactiveTintColor: COLORS.textLight,
+            tabBarStyle: {
+              backgroundColor: COLORS.surface,
+              borderTopColor: COLORS.border,
+              borderTopWidth: 0.5,
+              height: Platform.OS === 'ios' ? 88 : 64,
+              paddingTop: 6,
+              paddingBottom: Platform.OS === 'ios' ? 28 : 8,
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: -2 },
+              shadowOpacity: 0.05,
+              shadowRadius: 8,
+              elevation: 8,
+            },
+            tabBarLabelStyle: {
+              fontSize: 11,
+              fontWeight: '600',
+              marginTop: 2,
+            },
+          })}
+        >
+          <Tab.Screen
+            name="Home"
+            component={HomeStack}
+            options={{ tabBarLabel: 'Map' }}
+          />
+          <Tab.Screen
+            name="Filter"
+            component={FilterStack}
+            options={{ tabBarLabel: 'Filter' }}
+          />
+          <Tab.Screen
+            name="About"
+            component={AboutScreen}
+            options={{ tabBarLabel: 'About' }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
+  );
+}
