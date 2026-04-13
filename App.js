@@ -58,7 +58,9 @@ const TAB_ICONS = {
 };
 
 /** Padding above system gesture / home indicator so labels are not tight to the edge. */
-const TAB_BAR_EXTRA_BOTTOM = 14;
+const TAB_BAR_EXTRA_BOTTOM = 22;
+/** Mobile Safari reports tiny bottom insets; reserve space for toolbar above tab items. */
+const WEB_TAB_BAR_BROWSER_CHROME = 56;
 const TAB_BAR_TOP_PAD = 6;
 const TAB_BAR_ROW_HEIGHT = 50;
 
@@ -81,6 +83,7 @@ function WebShell({ children }) {
         style={[
           styles.webInner,
           wide ? styles.webInnerWide : styles.webInnerNarrow,
+          !wide && styles.webInnerMobileWebGutter,
         ]}
       >
         {children}
@@ -117,13 +120,20 @@ const styles = StyleSheet.create({
     boxShadow: '0 0 40px rgba(0, 0, 0, 0.12)',
   },
   webInnerNarrow: {
-    maxHeight: '100vh',
+    maxHeight: '100dvh',
+  },
+  webInnerMobileWebGutter: {
+    paddingBottom: 48,
+    boxSizing: 'border-box',
   },
 });
 
 function MainTabs() {
   const insets = useSafeAreaInsets();
-  const bottomPad = insets.bottom + TAB_BAR_EXTRA_BOTTOM;
+  const webChrome =
+    Platform.OS === 'web' ? WEB_TAB_BAR_BROWSER_CHROME : 0;
+  const bottomPad =
+    insets.bottom + TAB_BAR_EXTRA_BOTTOM + webChrome;
   const tabBarHeight =
     TAB_BAR_TOP_PAD + TAB_BAR_ROW_HEIGHT + bottomPad;
 
