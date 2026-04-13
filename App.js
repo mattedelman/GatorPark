@@ -57,12 +57,13 @@ const TAB_ICONS = {
   About: { active: 'information-circle', inactive: 'information-circle-outline' },
 };
 
-/** Padding above system gesture / home indicator so labels are not tight to the edge. */
-const TAB_BAR_EXTRA_BOTTOM = 22;
-/** Mobile Safari reports tiny bottom insets; reserve space for toolbar above tab items. */
-const WEB_TAB_BAR_BROWSER_CHROME = 56;
-const TAB_BAR_TOP_PAD = 6;
-const TAB_BAR_ROW_HEIGHT = 50;
+/** Extra inset below tab labels (home indicator / gesture area). */
+const TAB_BAR_EXTRA_BOTTOM = 12;
+/** Web: small nudge when safe-area is 0 (mobile browser); avoid stacking with CSS padding. */
+const WEB_TAB_BAR_BROWSER_CHROME = 28;
+const TAB_BAR_TOP_PAD = 8;
+/** Room for icon + label; too small clips text while paddingBottom stays large. */
+const TAB_BAR_ROW_HEIGHT = 58;
 
 const WEB_FRAME_BG = '#E8ECF2';
 
@@ -83,7 +84,6 @@ function WebShell({ children }) {
         style={[
           styles.webInner,
           wide ? styles.webInnerWide : styles.webInnerNarrow,
-          !wide && styles.webInnerMobileWebGutter,
         ]}
       >
         {children}
@@ -121,10 +121,6 @@ const styles = StyleSheet.create({
   },
   webInnerNarrow: {
     maxHeight: '100dvh',
-  },
-  webInnerMobileWebGutter: {
-    paddingBottom: 48,
-    boxSizing: 'border-box',
   },
 });
 
@@ -169,7 +165,12 @@ function MainTabs() {
         tabBarLabelStyle: {
           fontSize: 11,
           fontWeight: '600',
-          marginTop: 2,
+          marginTop: 0,
+          marginBottom: 2,
+        },
+        tabBarItemStyle: {
+          paddingTop: 4,
+          paddingBottom: 2,
         },
       })}
     >

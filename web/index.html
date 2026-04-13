@@ -33,10 +33,10 @@
         background: #fff;
         box-sizing: border-box;
       }
-      /* iOS Safari etc.: keep app above the browser toolbar + home indicator */
+      /* Safe area only — tab bar handles browser chrome in-app; avoids double gutter + white gap */
       @media (max-width: 499px) {
         #root {
-          padding-bottom: max(52px, calc(env(safe-area-inset-bottom, 0px) + 40px));
+          padding-bottom: env(safe-area-inset-bottom, 0px);
         }
       }
       @media (min-width: 500px) {
