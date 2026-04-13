@@ -166,9 +166,9 @@ export default function App() {
               backgroundColor: COLORS.surface,
               borderTopColor: COLORS.border,
               borderTopWidth: 0.5,
-              height: Platform.OS === 'ios' ? 88 : 64,
               paddingTop: 6,
-              paddingBottom: Platform.OS === 'ios' ? 28 : 8,
+              // Let the tab navigator apply paddingBottom from safe-area insets.
+              // Fixed height/paddingBottom was overriding that and clipped labels on phones.
               shadowColor: '#000',
               shadowOffset: { width: 0, height: -2 },
               shadowOpacity: 0.05,
